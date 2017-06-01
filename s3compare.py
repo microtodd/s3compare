@@ -41,18 +41,26 @@ def syncS3ToLocal(bucketName=None,path=None,profile=None):
 def compare(bucketDir=None,localDir=None):
     comp = filecmp.dircmp(bucketDir,localDir)
     comp.report()
+
+    # Recursion, dude.  https://docs.python.org/2/library/filecmp.html
     return comp
 
 def saveCompare(comp=None,outDir=None,tempDir=None,localDir=None):
     if not os.path.isdir(outDir):
         os.makedirs(outDir)
     for myFile in comp.diff_files:
+        # Skip dirs
+        if os.path.isdir(tempDir + '/' + myFile):
+            continue
         print 'diff=> ' + myFile + ' (diff saved to ' + outDir + '/diff_' + myFile + ')'
         outputFile = open(outDir + '/diff_' + myFile, 'w+')
         for line in difflib.context_diff(open(tempDir + '/' + myFile).readlines(),open(localDir + '/' + myFile).readlines(),fromfile='s3',tofile='local'):
             outputFile.write(line + '\n')
         outputFile.close()
     for myFile in comp.left_only:
+        # Skip dirs
+        if os.path.isdir(tempDir + '/' + myFile):
+            continue
         print 'In s3 but not local=> ' + myFile + ' (saved to ' + outDir + ')'
         shutil.copyfile(tempDir + '/' + myFile,outDir + '/' + myFile)
 
