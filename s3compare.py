@@ -55,7 +55,7 @@ def saveCompare(comp=None,outDir=None,tempDir=None,localDir=None):
         print 'diff=> ' + myFile + ' (diff saved to ' + outDir + '/diff_' + myFile + ')'
         outputFile = open(outDir + '/diff_' + myFile, 'w+')
         for line in difflib.context_diff(open(tempDir + '/' + myFile).readlines(),open(localDir + '/' + myFile).readlines(),fromfile='s3',tofile='local'):
-            outputFile.write(line + '\n')
+            outputFile.write(line)
         outputFile.close()
     for myFile in comp.left_only:
         # Skip dirs
