@@ -40,7 +40,7 @@ def syncS3ToLocal(bucketName=None,path=None,profile=None):
 
 def compare(bucketDir=None,localDir=None):
     comp = filecmp.dircmp(bucketDir,localDir)
-    comp.report()
+    comp.report_full_closure()
 
     # Recursion, dude.  https://docs.python.org/2/library/filecmp.html
     return comp
